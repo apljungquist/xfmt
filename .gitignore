@@ -1,0 +1,25 @@
+# MacOs
+.DS_Store
+
+# pytest and coverage
+.coverage
+.coverage.*
+htmlcov/
+
+# packaging and distribution
+.eggs/
+dist/
+*.egg-info/
+
+# mypy
+.mypy_cache/
+
+# pyenv
+.python-version
+
+# tox
+.tox/
+
+# Compiled
+__pycache__/
+
