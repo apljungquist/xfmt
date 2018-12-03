@@ -20,13 +20,12 @@ def _comb(n, k):
 
 class Combinations:
     """
-    Create an object that represent a of combinations.
+    Create an object that represent a collection of combinations.
 
     Useful for slicing or sampling from series too long to iterate over with
     `itertools.combinations`.
     """
 
-    # TODO: Implement a complete collection/sequence interface
     def __init__(self, s: Iterable, k: int) -> None:
         """
         Return a sequence of all k-combinations from the collection s.
@@ -95,6 +94,16 @@ class Combinations:
 
         # Convert the combinadic (descending order) to a combination (ascending order)
         return tuple(self._s[self._n - 1 - i] for i in combinadic)
+
+    def __contains__(self, selection):
+        # A selection is a k-combination of a collection iff it contains k
+        # elements ...
+        subset = collections.Counter(selection)
+        if sum(subset.values()) != self._k:
+            return False
+        # ... and it is a subset of the collection.
+        superset = collections.Counter(self._s)
+        return all(subset[k] <= superset[k] for k in subset)
 
     def gen_combinadic(self, index: int) -> Generator[int, None, None]:
         """
