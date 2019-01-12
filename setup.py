@@ -16,7 +16,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/apljungquist/sprig",
-    packages=setuptools.find_packages('sprig'),
+    packages=['sprig'],
     install_requires=[],
     classifiers=[
         "Development Status :: 3 - Alpha",
