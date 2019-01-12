@@ -1,5 +1,6 @@
-import pytest
 from sprig import dictutils
+
+import pytest
 
 deflated_examples = [
     {
