@@ -7,16 +7,16 @@ with open(readme_path, 'r') as fp:
     long_description = fp.read()
 
 setuptools.setup(
-    name="sprig",
+    name="xfmt",
     use_scm_version=True,
     setup_requires=['setuptools_scm'],
     author="AP Ljungquist",
     author_email="ap@ljungquist.eu",
-    description="A home to code that would otherwise be homeless",
+    description="Universal formatter",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/apljungquist/sprig",
-    packages=['sprig'],
+    url="https://github.com/apljungquist/xfmt",
+    packages=['xfmt'],
     install_requires=[],
     classifiers=[
         "Development Status :: 3 - Alpha",
