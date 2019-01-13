@@ -9,8 +9,7 @@ TreeT = Dict[str, Any]
 DEFAULT_SEP = '/'
 
 
-def inflate(deflated, sep=DEFAULT_SEP):
-    # type: (Dict[str, Any], str) -> TreeT
+def inflate(deflated:Dict[str, Any], sep:str=DEFAULT_SEP)-> TreeT:
     """
     Interpret the keys as paths in a tree to its leaf nodes, the values as the
     corresponding value and return a nested dict representation of that tree.
