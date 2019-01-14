@@ -17,10 +17,12 @@ def _fix_json(before: str) -> str:
 
 def _check_json(before: str) -> bool:
     after = _fix_json(before)
-    sys.stdout.writelines(difflib.unified_diff(
-        before.splitlines(keepends=True),
-        after.splitlines(keepends=True),
-        fromfile='actual',
-        tofile='expected'
-    ))
+    sys.stdout.writelines(
+        difflib.unified_diff(
+            before.splitlines(keepends=True),
+            after.splitlines(keepends=True),
+            fromfile='actual',
+            tofile='expected'
+        )
+    )
     return before == after

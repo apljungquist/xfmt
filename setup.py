@@ -17,9 +17,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/apljungquist/xfmt",
     packages=['xfmt'],
-    install_requires=[
-        'click'
-    ],
+    install_requires=['click'],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
@@ -27,12 +25,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     entry_points={
-        "xfmt.checkers": [
-            '*.json = xfmt.json:_check_json'
-        ],
-        "xfmt.fixers": [
-            '*.json = xfmt.json:_fix_json'
-        ],
+        "xfmt.checkers": ['*.json = xfmt.json:_check_json'],
+        "xfmt.fixers": ['*.json = xfmt.json:_fix_json'],
         "console_scripts": [
             "xfmt = xfmt.main:main",
         ]

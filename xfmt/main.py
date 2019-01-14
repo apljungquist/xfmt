@@ -16,7 +16,9 @@ def _match_rule(rules, filepath):
             for pat, func in rules.items()
             if fnmatch.fnmatch(os.path.basename(filepath), pat)]
     if len(hits) != 1:
-        raise RuntimeError("Expected exactly one matching function but found %d", len(hits))
+        raise RuntimeError(
+            "Expected exactly one matching function but found %d", len(hits)
+        )
     return hits[0]
 
 
