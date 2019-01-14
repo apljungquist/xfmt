@@ -1,3 +1,6 @@
+"""
+Formatting functions for json
+"""
 import difflib
 import json
 import sys

@@ -1,3 +1,6 @@
+"""
+Functions for collecting and running formatting tools on files.
+"""
 import contextlib
 import fnmatch
 import glob
@@ -17,7 +20,7 @@ def _match_rule(rules, filepath):
             if fnmatch.fnmatch(os.path.basename(filepath), pat)]
     if len(hits) != 1:
         raise RuntimeError(
-            "Expected exactly one matching function but found %d", len(hits)
+            "Expected exactly one matching function but found {}".format(len(hits))
         )
     return hits[0]
 
@@ -26,8 +29,8 @@ def _check_one(rules, filepath):
     logger.debug("Processing %s", filepath)
     pattern, func = _match_rule(rules, filepath)
     logger.debug("Matching pattern %s", pattern)
-    with open(filepath, 'r') as fp:
-        before = fp.read()
+    with open(filepath, 'r') as f:
+        before = f.read()
     retval = func(before)
     logger.debug("File was %s", 'pretty' if retval else 'ugly')
     return retval
@@ -45,11 +48,11 @@ def _fix_one(rules, filepath):
     logger.debug("Processing %s", filepath)
     pattern, func = _match_rule(rules, filepath)
     logger.debug("Matching pattern %s", pattern)
-    with open(filepath, 'r') as fp:
-        before = fp.read()
+    with open(filepath, 'r') as f:
+        before = f.read()
     after = func(before)
-    with open(filepath, 'w') as fp:
-        fp.write(after)
+    with open(filepath, 'w') as f:
+        f.write(after)
     logger.debug("File was %s", 'already pretty' if before == after else 'fixed')
 
 
@@ -81,7 +84,7 @@ def _main(pattern, fix):
 def _exit_codes():
     try:
         yield
-    except Exception as e:
+    except Exception as e:  # pylint: disable=W0703
         logger.error(repr(e))
         exit(1)
     exit(0)
@@ -91,6 +94,9 @@ def _exit_codes():
 @click.argument('pattern', type=click.STRING)
 @click.option('--fix', is_flag=True, default=False)
 def main(pattern, fix):
+    """
+    Attempt to process all files matching some pattern.
+    """
     with _exit_codes():
         logging.basicConfig(level=logging.DEBUG)
         _main(pattern, fix)

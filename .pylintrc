@@ -1,5 +1,5 @@
 [BASIC]
-good-names=i,j,k,n,ex,Run,_
+good-names=i,j,k,n,e,f,Run,_,logger
 
 [MISCELLANEOUS]
 notes=FIXME,XXX
