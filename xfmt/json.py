@@ -14,7 +14,7 @@ JSON_PRETTY_KWARGS = {
 
 def _fix_json(before: str) -> str:
     data = json.loads(before)
-    after = json.dumps(data, **JSON_PRETTY_KWARGS)
+    after = json.dumps(data, **JSON_PRETTY_KWARGS)  # type: ignore
     return after
 
 
