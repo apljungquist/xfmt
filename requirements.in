@@ -1,0 +1,9 @@
+codecov
+coverage
+mypy
+pip-tools
+pytest
+tox
+yapf
+isort
+pylint
