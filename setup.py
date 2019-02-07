@@ -24,11 +24,4 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    entry_points={
-        "xfmt.checkers": ['*.json = xfmt.json:_check_json'],
-        "xfmt.fixers": ['*.json = xfmt.json:_fix_json'],
-        "console_scripts": [
-            "xfmt = xfmt.main:main",
-        ]
-    }
 )

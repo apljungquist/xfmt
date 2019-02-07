@@ -6,7 +6,7 @@ import json
 import sys
 
 JSON_PRETTY_KWARGS = {
-    'indent': 4,
+    'indent': 2,
     'separators': (',', ': '),
     'sort_keys': True,
 }
@@ -18,7 +18,16 @@ def _fix_json(before: str) -> str:
     return after
 
 
-def _check_json(before: str) -> bool:
+def check_json(before: str) -> bool:
+    """Check if json is properly formatted.
+
+    The return values may seem unintuitive but the idea is to allow functions
+    to return hints as to what is wrong in the case of failure. In the case of
+    success no hints would be needed.
+
+    :param before: json string
+    :return: True for failure, False for success.
+    """
     after = _fix_json(before)
     sys.stdout.writelines(
         difflib.unified_diff(
@@ -28,4 +37,4 @@ def _check_json(before: str) -> bool:
             tofile='expected'
         )
     )
-    return before == after
+    return before != after
