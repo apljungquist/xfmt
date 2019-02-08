@@ -4,13 +4,14 @@ This is for pytest to find and stop being upset not finding any tests.
 >>> 'Happy?'[:-1]
 'Happy'
 """
+
 import glob
 import os
 
 from xfmt import main, misc
 
 
-def test_samples_bad():
+def test_samples_bad():  # pylint: disable=C0111
     samples_dirpath = misc.resource_abspath(os.path.join('tests', 'samples', 'bad'))
     good, bad = main.check_all(samples_dirpath)
     assert not good
@@ -19,7 +20,7 @@ def test_samples_bad():
         assert filepath in bad
 
 
-def test_samples_good():
+def test_samples_good():  # pylint: disable=C0111
     samples_dirpath = misc.resource_abspath(os.path.join('tests', 'samples', 'good'))
     good, bad = main.check_all(samples_dirpath)
     assert not bad
