@@ -3,7 +3,7 @@ Miscellaneous utilities
 """
 import os
 
-PROJECT_ABSPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+PROJECT_ABSPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 
 def resource_abspath(relpath):
