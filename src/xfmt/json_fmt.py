@@ -3,13 +3,15 @@ Formatting functions for json
 """
 import difflib
 import json
-import sys
+from typing import Iterable, List
 
 JSON_PRETTY_KWARGS = {
     'indent': 2,
     'separators': (',', ': '),
     'sort_keys': True,
 }
+
+_FROMFILE = 'actual'
 
 
 def _fix_json(before: str) -> str:
@@ -18,23 +20,25 @@ def _fix_json(before: str) -> str:
     return after
 
 
-def check_json(before: str) -> bool:
+def _chunk_lines(lines: Iterable[str]) -> Iterable[str]:
+    chunk = []  # type: List[str]
+    for line in lines:
+        if line == '--- {}\n'.format(_FROMFILE):
+            yield ''.join(chunk)
+            chunk = []
+        chunk.append(line)
+    yield ''.join(chunk)
+
+
+def check_json(before: str) -> List[str]:
     """Check if json is properly formatted.
-
-    The return values may seem unintuitive but the idea is to allow functions
-    to return hints as to what is wrong in the case of failure. In the case of
-    success no hints would be needed.
-
-    :param before: json string
-    :return: True for failure, False for success.
     """
     after = _fix_json(before)
-    sys.stdout.writelines(
-        difflib.unified_diff(
-            before.splitlines(keepends=True),
-            after.splitlines(keepends=True),
-            fromfile='actual',
-            tofile='expected'
-        )
+    lines = difflib.unified_diff(
+        before.splitlines(keepends=True),
+        after.splitlines(keepends=True),
+        fromfile=_FROMFILE,
+        tofile='expected'
     )
-    return before != after
+    chunks = list(_chunk_lines(lines))
+    return chunks[1:]  # First chunk is empty
