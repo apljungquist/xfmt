@@ -3,7 +3,10 @@ Formatting functions for json
 """
 import difflib
 import json
+import os
 from typing import Iterable, List
+
+from xfmt import base
 
 JSON_PRETTY_KWARGS = {
     'indent': 2,
@@ -42,3 +45,17 @@ def check_json(before: str) -> List[str]:
     )
     chunks = list(_chunk_lines(lines))
     return chunks[1:]  # First chunk is empty
+
+
+class JsonChecker(base.Checker):
+    """Plugin for checking the format of json files.
+    """
+
+    def check(self, path):
+        with open(path, 'r') as fp:
+            content = fp.read()
+        return check_json(content)
+
+    def match(self, path):
+        _, ext = os.path.splitext(path)
+        return ext == '.json'

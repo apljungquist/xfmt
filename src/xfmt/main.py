@@ -10,7 +10,8 @@ from datetime import datetime
 from typing import Iterable, List
 
 import click
-from xfmt import json_fmt
+import pkg_resources
+from xfmt import base
 
 logger = logging.getLogger(__name__)
 
@@ -27,14 +28,21 @@ def collect(top: str) -> Iterable[str]:
     yield from (os.path.relpath(p, top) for p in paths)
 
 
-def check(path: str) -> List[str]:
+def check(path: str, checkers: List[base.Checker]) -> List[str]:
     """Check format of file.
     """
-    _, ext = os.path.splitext(path)
-    if ext == '.json':
-        with open(path, 'r') as fp:
-            return json_fmt.check_json(fp.read())
-    raise LookupError("Path did not match any pattern")
+    assert checkers
+    checker_matched = False
+    feedback = []  # type:  List[str]
+    for checker in checkers:
+        if checker.match(path):
+            checker_matched = True
+            feedback.extend(checker.check(path))
+
+    if not checker_matched:
+        raise LookupError("Path did not match any pattern")
+
+    return feedback
 
 
 @contextlib.contextmanager
@@ -47,6 +55,18 @@ def _exit_codes():
     exit(0)
 
 
+def _gen_checkers() -> Iterable[base.Checker]:
+    for entry_point in pkg_resources.iter_entry_points('xfmt.checker'):
+        factory_func = entry_point.load()
+        yield factory_func()
+
+
+def get_checkers():
+    """Instantiate all registered checkers.
+    """
+    return list(_gen_checkers())
+
+
 @click.command()
 @click.argument('top', type=click.STRING)
 def main(top):
@@ -57,10 +77,11 @@ def main(top):
             level=logging.DEBUG, handlers=[logging.FileHandler('main.log')]
         )
         logger.info("Logging initialized at %s", datetime.now().isoformat())
+        checkers = get_checkers()
         for path in collect(top):
             logger.info("Checking %s", path)
             try:
-                feedback = check(os.path.join(top, path))
+                feedback = check(os.path.join(top, path), checkers)
                 sys.stdout.write("# " + path + "\n")
                 sys.stdout.writelines(feedback)
             except LookupError as e:

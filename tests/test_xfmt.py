@@ -4,7 +4,7 @@ This is for pytest to find and stop being upset not finding any tests.
 >>> 'Happy?'[:-1]
 'Happy'
 """
-
+# pylint: disable=C0111,W0621
 import os
 
 import pytest  # type: ignore
@@ -23,7 +23,12 @@ _OTHER_SAMPLES = [
 _SAMPLES_PATH = os.path.normpath(os.path.join(__file__, '..', 'samples'))
 
 
-def test_collect_finds_all_samples():  # pylint: disable=C0111
+@pytest.fixture()
+def checkers():
+    yield main.get_checkers()
+
+
+def test_collect_finds_all_samples():
     # Sort to ignore order of paths
     # Use lists, instead of say sets, to pay attention to number of occurrences
     expected = sorted(_BAD_SAMPELS + _GOOD_SAMPLES + _OTHER_SAMPLES)
@@ -33,16 +38,16 @@ def test_collect_finds_all_samples():  # pylint: disable=C0111
 
 
 @pytest.mark.parametrize('relpath', _BAD_SAMPELS)
-def test_check_fails_bad_samples(relpath):  # pylint: disable=C0111
-    assert main.check(os.path.join(_SAMPLES_PATH, relpath))
+def test_check_fails_bad_samples(relpath, checkers):
+    assert main.check(os.path.join(_SAMPLES_PATH, relpath), checkers)
 
 
 @pytest.mark.parametrize('relpath', _GOOD_SAMPLES)
-def test_check_passes_good_samples(relpath):  # pylint: disable=C0111
-    assert not main.check(os.path.join(_SAMPLES_PATH, relpath))
+def test_check_passes_good_samples(relpath, checkers):
+    assert not main.check(os.path.join(_SAMPLES_PATH, relpath), checkers)
 
 
 @pytest.mark.parametrize('relpath', _OTHER_SAMPLES)
-def test_check_raises_on_other_samples(relpath):  # pylint: disable=C0111
+def test_check_raises_on_other_samples(relpath, checkers):
     with pytest.raises(LookupError):
-        main.check(os.path.join(_SAMPLES_PATH, relpath))
+        main.check(os.path.join(_SAMPLES_PATH, relpath), checkers)
