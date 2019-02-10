@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 def collect(top: str) -> Iterable[str]:
-    """Collect file paths to be checked.
+    """Collect file paths to be formatted.
     """
     if not os.path.isdir(top):
         if os.path.isfile(top):
@@ -28,18 +28,21 @@ def collect(top: str) -> Iterable[str]:
     yield from (os.path.relpath(p, top) for p in paths)
 
 
-def check(path: str, checkers: List[base.Checker]) -> List[str]:
+def check(path: str, formatters: List[base.Formatter], fixes: bool) -> List[str]:
     """Check format of file.
     """
-    assert checkers
-    checker_matched = False
+    assert formatters
+    formatter_matched = False
     feedback = []  # type:  List[str]
-    for checker in checkers:
-        if checker.match(path):
-            checker_matched = True
-            feedback.extend(checker.check(path))
+    for formatter in formatters:
+        if formatter.match(path):
+            formatter_matched = True
+            if fixes:
+                feedback.extend(formatter.fix(path))
+            else:
+                feedback.extend(formatter.check(path))
 
-    if not checker_matched:
+    if not formatter_matched:
         raise LookupError("Path did not match any pattern")
 
     return feedback
@@ -55,21 +58,22 @@ def _exit_codes():
     exit(0)
 
 
-def _gen_checkers() -> Iterable[base.Checker]:
-    for entry_point in pkg_resources.iter_entry_points('xfmt.checker'):
+def _gen_formatters() -> Iterable[base.Formatter]:
+    for entry_point in pkg_resources.iter_entry_points('xfmt.formatter'):
         factory_func = entry_point.load()
         yield factory_func()
 
 
-def get_checkers():
-    """Instantiate all registered checkers.
+def get_formatters():
+    """Instantiate all registered formatters.
     """
-    return list(_gen_checkers())
+    return list(_gen_formatters())
 
 
 @click.command()
 @click.argument('top', type=click.STRING)
-def main(top):
+@click.option('--fix', is_flag=True, default=False)
+def main(top, fix):
     """Recursively check formatting of files under path
     """
     with _exit_codes():
@@ -77,13 +81,13 @@ def main(top):
             level=logging.DEBUG, handlers=[logging.FileHandler('main.log')]
         )
         logger.info("Logging initialized at %s", datetime.now().isoformat())
-        checkers = get_checkers()
+        formatters = get_formatters()
         for path in collect(top):
             logger.info("Checking %s", path)
             try:
-                feedback = check(os.path.join(top, path), checkers)
-                sys.stdout.write("# " + path + "\n")
-                sys.stdout.writelines(feedback)
+                feedback = check(os.path.join(top, path), formatters, fix)
+                if feedback:
+                    sys.stdout.writelines(feedback)
+                    sys.stdout.write("\n")
             except LookupError as e:
                 logger.debug(e)
-        sys.stdout.write("\n")

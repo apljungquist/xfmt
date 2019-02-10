@@ -7,13 +7,18 @@ from abc import ABC, abstractmethod
 from typing import List
 
 
-class Checker(ABC):
+class Formatter(ABC):
     """Template class for checker plugins
     """
 
     @abstractmethod
     def check(self, path: str) -> List[str]:
         """Check format of a single file.
+        """
+
+    @abstractmethod
+    def fix(self, path: str) -> List[str]:
+        """Attempt to fix the format of a single file.
         """
 
     @abstractmethod
