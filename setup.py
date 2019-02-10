@@ -26,7 +26,10 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     entry_points={
-        "xfmt.formatter": ["xfmt.json = xfmt.json_fmt:JsonFormatter"],
+        "xfmt.formatter": [
+            "xfmt.json = xfmt.json_fmt:JsonFormatter",
+            "xfmt.black = xfmt.black_fmt:BlackFormatter",
+        ],
         "console_scripts": ["xfmt = xfmt.main:main"],
     },
 )

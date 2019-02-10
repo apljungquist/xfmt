@@ -10,10 +10,14 @@ import os
 import pytest  # type: ignore
 from xfmt import json_fmt, main
 
-_BAD_SAMPELS = ["mumbo_jumbo.json", "nested_directory/argle_bargle.json"]
-_GOOD_SAMPLES = ["spruce.json"]
+_BAD_SAMPELS = [
+    "mumbo_jumbo.json",
+    "nested_directory/argle_bargle.json",
+    "short_and_squat.py",
+]
+_GOOD_SAMPLES = ["spruce.json", "great_and_small.py"]
 _OTHER_SAMPLES = ["nesbitt.sh"]
-_SAMPLES_PATH = os.path.normpath(os.path.join(__file__, "..", "samples"))
+_SAMPLES_PATH = os.path.normpath(os.path.join(__file__, "..", "..", "samples"))
 
 
 @pytest.fixture()
