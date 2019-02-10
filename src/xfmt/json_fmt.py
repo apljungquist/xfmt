@@ -8,11 +8,7 @@ from typing import List
 from xfmt import base
 from xfmt.misc import diff
 
-JSON_PRETTY_KWARGS = {
-    'indent': 2,
-    'separators': (',', ': '),
-    'sort_keys': True,
-}
+JSON_PRETTY_KWARGS = {"indent": 2, "separators": (",", ": "), "sort_keys": True}
 
 
 def fix_content_json(before: str) -> str:
@@ -35,7 +31,7 @@ def check_content_json(before: str) -> List[str]:
 def fix_file_json(path: str) -> List[str]:
     """Fix json formatting, returning any changes that have been made.
     """
-    with open(path, 'r') as fp:
+    with open(path, "r") as fp:
         before = fp.read()
 
     after = fix_content_json(before)
@@ -43,7 +39,7 @@ def fix_file_json(path: str) -> List[str]:
     if before == after:
         return []
 
-    with open(path, 'w') as fp:
+    with open(path, "w") as fp:
         fp.write(after)
 
     return diff(before, after)
@@ -52,7 +48,7 @@ def fix_file_json(path: str) -> List[str]:
 def check_file_json(path: str) -> List[str]:
     """Check json formatting, returning any changes that should be made.
     """
-    with open(path, 'r') as fp:
+    with open(path, "r") as fp:
         before = fp.read()
 
     after = fix_content_json(before)
@@ -74,4 +70,4 @@ class JsonFormatter(base.Formatter):
 
     def match(self, path):
         _, ext = os.path.splitext(path)
-        return ext == '.json'
+        return ext == ".json"

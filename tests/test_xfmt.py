@@ -10,17 +10,10 @@ import os
 import pytest  # type: ignore
 from xfmt import json_fmt, main
 
-_BAD_SAMPELS = [
-    'mumbo_jumbo.json',
-    'nested_directory/argle_bargle.json',
-]
-_GOOD_SAMPLES = [
-    'spruce.json',
-]
-_OTHER_SAMPLES = [
-    'nesbitt.sh',
-]
-_SAMPLES_PATH = os.path.normpath(os.path.join(__file__, '..', 'samples'))
+_BAD_SAMPELS = ["mumbo_jumbo.json", "nested_directory/argle_bargle.json"]
+_GOOD_SAMPLES = ["spruce.json"]
+_OTHER_SAMPLES = ["nesbitt.sh"]
+_SAMPLES_PATH = os.path.normpath(os.path.join(__file__, "..", "samples"))
 
 
 @pytest.fixture()
@@ -42,17 +35,17 @@ def test_get_formatters_finds_all_formatters(formatters):
     assert json_fmt.JsonFormatter in types
 
 
-@pytest.mark.parametrize('relpath', _BAD_SAMPELS)
+@pytest.mark.parametrize("relpath", _BAD_SAMPELS)
 def test_check_fails_bad_samples(relpath, formatters):
     assert main.check(os.path.join(_SAMPLES_PATH, relpath), formatters, False)
 
 
-@pytest.mark.parametrize('relpath', _GOOD_SAMPLES)
+@pytest.mark.parametrize("relpath", _GOOD_SAMPLES)
 def test_check_passes_good_samples(relpath, formatters):
     assert not main.check(os.path.join(_SAMPLES_PATH, relpath), formatters, False)
 
 
-@pytest.mark.parametrize('relpath', _OTHER_SAMPLES)
+@pytest.mark.parametrize("relpath", _OTHER_SAMPLES)
 def test_check_raises_on_other_samples(relpath, formatters):
     with pytest.raises(LookupError):
         main.check(os.path.join(_SAMPLES_PATH, relpath), formatters, False)

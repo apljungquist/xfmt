@@ -4,6 +4,6 @@ mypy
 pip-tools
 pytest
 tox
-yapf
+black
 isort
 pylint

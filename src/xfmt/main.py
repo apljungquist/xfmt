@@ -24,7 +24,7 @@ def collect(top: str) -> Iterable[str]:
             raise ValueError("Collecting from file is meaningless")
         else:
             raise RuntimeError("Huh? {}".format(top))
-    paths = filter(os.path.isfile, glob.iglob(os.path.join(top, '**'), recursive=True))
+    paths = filter(os.path.isfile, glob.iglob(os.path.join(top, "**"), recursive=True))
     yield from (os.path.relpath(p, top) for p in paths)
 
 
@@ -59,7 +59,7 @@ def _exit_codes():
 
 
 def _gen_formatters() -> Iterable[base.Formatter]:
-    for entry_point in pkg_resources.iter_entry_points('xfmt.formatter'):
+    for entry_point in pkg_resources.iter_entry_points("xfmt.formatter"):
         factory_func = entry_point.load()
         yield factory_func()
 
@@ -71,14 +71,14 @@ def get_formatters():
 
 
 @click.command()
-@click.argument('top', type=click.STRING)
-@click.option('--fix', is_flag=True, default=False)
+@click.argument("top", type=click.STRING)
+@click.option("--fix", is_flag=True, default=False)
 def main(top, fix):
     """Recursively check formatting of files under path
     """
     with _exit_codes():
         logging.basicConfig(
-            level=logging.DEBUG, handlers=[logging.FileHandler('main.log')]
+            level=logging.DEBUG, handlers=[logging.FileHandler("main.log")]
         )
         logger.info("Logging initialized at %s", datetime.now().isoformat())
         formatters = get_formatters()
