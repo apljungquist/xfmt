@@ -9,7 +9,9 @@ import sys
 from datetime import datetime
 from typing import Iterable, List
 
+import black  # type: ignore
 import click
+import colorama  # type: ignore
 import pkg_resources
 from xfmt import base
 
@@ -58,6 +60,18 @@ def _exit_codes():
     exit(0)
 
 
+@contextlib.contextmanager
+def _exit_indicator():
+    # Leave at least two blank spaces at the end for symmetry
+    num_repetition = (black.DEFAULT_LINE_LENGTH - 2) // 3
+    try:
+        yield
+    except Exception:
+        print("  ⛈" * num_repetition, file=sys.stderr)
+        raise
+    print("  ☀️" * num_repetition, file=sys.stderr)
+
+
 def _gen_formatters() -> Iterable[base.Formatter]:
     for entry_point in pkg_resources.iter_entry_points("xfmt.formatter"):
         factory_func = entry_point.load()
@@ -70,13 +84,32 @@ def get_formatters():
     return list(_gen_formatters())
 
 
+def _pprint_diff(diff):
+    for line in diff.split("\n"):
+        if line.startswith(" ") or line == "":
+            print(line)
+        elif line.startswith("---"):
+            print(colorama.Style.BRIGHT + line + colorama.Style.RESET_ALL)
+        elif line.startswith("+++"):
+            print(colorama.Style.BRIGHT + line + colorama.Style.RESET_ALL)
+        elif line.startswith("@@"):
+            print(colorama.Fore.CYAN + line + colorama.Fore.RESET)
+        elif line.startswith("+"):
+            print(colorama.Fore.GREEN + line + colorama.Fore.RESET)
+        elif line.startswith("-"):
+            print(colorama.Fore.RED + line + colorama.Fore.RESET)
+        else:
+            logger.debug(">>>%s<<<", line)
+            raise RuntimeError("Unrecognized diff format")
+
+
 @click.command()
 @click.argument("top", type=click.STRING)
 @click.option("--fix", is_flag=True, default=False)
 def main(top, fix):
     """Recursively check formatting of files under path
     """
-    with _exit_codes():
+    with _exit_codes(), _exit_indicator():
         logging.basicConfig(
             level=logging.DEBUG, handlers=[logging.FileHandler("main.log")]
         )
@@ -86,8 +119,7 @@ def main(top, fix):
             logger.info("Checking %s", path)
             try:
                 feedback = check(os.path.join(top, path), formatters, fix)
-                if feedback:
-                    sys.stdout.writelines(feedback)
-                    sys.stdout.write("\n")
+                for chunk in feedback:
+                    _pprint_diff(chunk)
             except LookupError as e:
                 logger.debug(e)

@@ -18,7 +18,7 @@ setuptools.setup(
     url="https://github.com/apljungquist/xfmt",
     packages=setuptools.find_packages("src"),
     package_dir={"": "src"},
-    install_requires=["click"],
+    install_requires=["click", "black", "colorama"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
