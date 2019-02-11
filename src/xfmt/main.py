@@ -104,9 +104,9 @@ def _pprint_diff(diff):
 
 
 @click.command()
-@click.argument("top", type=click.STRING)
+@click.argument("tops", type=click.STRING, nargs=-1, required=True)
 @click.option("--fix", is_flag=True, default=False)
-def main(top, fix):
+def main(tops, fix):
     """Recursively check formatting of files under path
     """
     with _exit_codes(), _exit_indicator():
@@ -115,10 +115,12 @@ def main(top, fix):
         )
         logger.info("Logging initialized at %s", datetime.now().isoformat())
         formatters = get_formatters()
-        if os.path.isfile(top):
-            paths = [top]
-        else:
-            paths = (os.path.join(top, path) for path in collect(top))
+        paths = set()
+        for top in tops:
+            if os.path.isfile(top):
+                paths.add(top)
+            else:
+                paths.update(os.path.join(top, path) for path in collect(top))
         for path in paths:
             logger.info("Checking %s", path)
             try:
