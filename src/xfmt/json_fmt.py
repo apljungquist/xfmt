@@ -8,7 +8,7 @@ from typing import List
 from xfmt import base
 from xfmt.misc import diff
 
-JSON_PRETTY_KWARGS = {"indent": 2, "separators": (",", ": "), "sort_keys": True}
+JSON_PRETTY_KWARGS = {"indent": 4, "separators": (",", ": "), "sort_keys": True}
 
 
 def fix_content_json(before: str) -> str:
