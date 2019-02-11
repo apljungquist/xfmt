@@ -115,10 +115,14 @@ def main(top, fix):
         )
         logger.info("Logging initialized at %s", datetime.now().isoformat())
         formatters = get_formatters()
-        for path in collect(top):
+        if os.path.isfile(top):
+            paths = [top]
+        else:
+            paths = (os.path.join(top, path) for path in collect(top))
+        for path in paths:
             logger.info("Checking %s", path)
             try:
-                feedback = check(os.path.join(top, path), formatters, fix)
+                feedback = check(path, formatters, fix)
                 for chunk in feedback:
                     _pprint_diff(chunk)
             except LookupError as e:
