@@ -56,16 +56,43 @@ def _pprint_diff(diff):
             raise RuntimeError("Unrecognized diff format")
 
 
+class _DriverFilter(logging.Filter):  # pylint: disable=R0903
+    """
+    A filter dedicated to curbing the excessive verbosity of `lib2to3.pgen2.driver`
+    and, more importantly, `black.blib2to3.pgen2.driver`.
+    """
+
+    def filter(self, record: logging.LogRecord):
+        if record.module == "driver":
+            return False
+        return True
+
+
+def _init_logging():
+    handler = logging.FileHandler("main.log")
+    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(
+        logging.Formatter(
+            "%(asctime)s [%(levelname)8s] %(name)s %(filename)s:%(lineno)d %(message)s"
+        )
+    )
+
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.DEBUG)
+    root_logger.addHandler(handler)
+    root_logger.addFilter(_DriverFilter())
+
+
 @click.command()
 @click.argument("tops", type=click.STRING, nargs=-1, required=True)
 @click.option("--fix", is_flag=True, default=False)
-def main(tops, fix):
+@click.option("--debug", is_flag=True, default=False)
+def main(tops, fix, debug):
     """Recursively check formatting of files under path
     """
     with _exit_codes(), _exit_indicator():
-        logging.basicConfig(
-            level=logging.DEBUG, handlers=[logging.FileHandler("main.log")]
-        )
+        if debug:
+            _init_logging()
         logger.info("Logging initialized at %s", datetime.now().isoformat())
         formatters = misc.get_formatters()
         paths = set()
