@@ -30,6 +30,6 @@ setuptools.setup(
             "xfmt.json = xfmt.json_fmt:JsonFormatter",
             "xfmt.black = xfmt.black_fmt:BlackFormatter",
         ],
-        "console_scripts": ["xfmt = xfmt.main:main"],
+        "console_scripts": ["xfmt = xfmt.cli:main"],
     },
 )
