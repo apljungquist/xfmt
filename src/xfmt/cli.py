@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Functions that are expected to be invoked only from the cli, directly or indirectly.
 """
@@ -109,3 +110,7 @@ def main(tops, fix, debug):
                     _pprint_diff(chunk)
             except LookupError as e:
                 logger.debug(e)
+
+
+if __name__ == "__main__":
+    main()  # pylint: disable=E1120
