@@ -2,6 +2,9 @@ import os
 
 import setuptools
 
+with open("requirements/install_requires.txt") as fp:
+    install_requires = list(fp)
+
 readme_path = os.path.join(os.path.dirname(__file__), "README.md")
 with open(readme_path, "r") as fp:
     long_description = fp.read()
@@ -18,7 +21,7 @@ setuptools.setup(
     url="https://github.com/apljungquist/xfmt",
     packages=setuptools.find_packages("src"),
     package_dir={"": "src"},
-    install_requires=["click", "black", "colorama"],
+    install_requires=install_requires,
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",

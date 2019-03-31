@@ -8,7 +8,7 @@ init:
   - SET PATH=%PYTHON%;%PATH%
 
 install:
-  - python -m pip install -U tox
+  - python -m pip install -U tox-constraints
 
 build: off
 

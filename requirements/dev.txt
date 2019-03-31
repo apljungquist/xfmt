@@ -1,0 +1,7 @@
+# These package are considered unsafe but we nonetheless want to document the versions used
+setuptools
+pip
+
+# Other packages needed to manage the project
+pip-tools
+tox-constraints
