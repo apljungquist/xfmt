@@ -91,7 +91,7 @@ def _init_logging():
 def main(tops, fix, debug):
     """Recursively check formatting of files under path
     """
-    with _exit_codes(), _exit_indicator():
+    with _exit_codes():
         if debug:
             _init_logging()
         logger.info("Logging initialized at %s", datetime.now().isoformat())
